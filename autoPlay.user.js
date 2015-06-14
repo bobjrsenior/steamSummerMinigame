@@ -842,9 +842,9 @@ function disableCooldownIfRelevant() {
 function useCrippleMonsterIfRelevant() {
    // Check if Cripple Spawner is available
    if(hasItem(ITEMS.CRIPPLE_MONSTER)) {
-	if (isAbilityCoolingDown(ITEMS.CRIPPLE_MONSTER)) {
-		return;
-	}
+   	if (isAbilityCoolingDown(ITEMS.CRIPPLE_MONSTER)) {
+   		return;
+   	}
    }
 
    var level = getGameLevel();
@@ -905,24 +905,23 @@ function useClusterBombIfRelevant() {
 		return;
 	}
 
-		//Check lane has monsters to explode
-		var currentLane = s().m_nExpectedLane;
-		var enemyCount = 0;
-		var enemySpawnerExists = false;
-		//Count each slot in lane
-		for (var i = 0; i < 4; i++) {
-			var enemy = s().GetEnemy(currentLane, i);
-			if (enemy) {
-				enemyCount++;
-				if (enemy.m_data.type === 0) {
-					enemySpawnerExists = true;
-				}
+	//Check lane has monsters to explode
+	var currentLane = s().m_nExpectedLane;
+	var enemyCount = 0;
+	var enemySpawnerExists = false;
+	//Count each slot in lane
+	for (var i = 0; i < 4; i++) {
+		var enemy = s().GetEnemy(currentLane, i);
+		if (enemy) {
+			enemyCount++;
+			if (enemy.m_data.type === 0) {
+				enemySpawnerExists = true;
 			}
 		}
-		//Bombs away if spawner and 2+ other monsters
-		if (enemySpawnerExists && enemyCount >= 3) {
-			triggerAbility(ABILITIES.CLUSTER_BOMB);
-		}
+	}
+	//Bombs away if spawner and 2+ other monsters
+	if (enemySpawnerExists && enemyCount >= 3) {
+		triggerAbility(ABILITIES.CLUSTER_BOMB);
 	}
 }
 
@@ -933,24 +932,23 @@ function useNapalmIfRelevant() {
 		return;
 	}
 
-		//Check lane has monsters to burn
-		var currentLane = s().m_nExpectedLane;
-		var enemyCount = 0;
-		var enemySpawnerExists = false;
-		//Count each slot in lane
-		for (var i = 0; i < 4; i++) {
-			var enemy = s().GetEnemy(currentLane, i);
-			if (enemy) {
-				enemyCount++;
-				if (enemy.m_data.type === 0) {
-					enemySpawnerExists = true;
-				}
+	//Check lane has monsters to burn
+	var currentLane = s().m_nExpectedLane;
+	var enemyCount = 0;
+	var enemySpawnerExists = false;
+	//Count each slot in lane
+	for (var i = 0; i < 4; i++) {
+		var enemy = s().GetEnemy(currentLane, i);
+		if (enemy) {
+			enemyCount++;
+			if (enemy.m_data.type === 0) {
+				enemySpawnerExists = true;
 			}
 		}
-		//Burn them all if spawner and 2+ other monsters
-		if (enemySpawnerExists && enemyCount >= 3) {
-			triggerAbility(ABILITIES.NAPALM);
-		}
+	}
+	//Burn them all if spawner and 2+ other monsters
+	if (enemySpawnerExists && enemyCount >= 3) {
+		triggerAbility(ABILITIES.NAPALM);
 	}
 }
 
@@ -962,18 +960,18 @@ function useMoraleBoosterIfRelevant() {
 	}
 	var numberOfWorthwhileEnemies = 0;
 	for(var i = 0; i < s().m_rgGameData.lanes[s().m_nExpectedLane].enemies.length; i++){
-			//Worthwhile enemy is when an enamy has a current hp value of at least 1,000,000
-			if(s().m_rgGameData.lanes[s().m_nExpectedLane].enemies[i].hp > 1000000) {
-				numberOfWorthwhileEnemies++;
-			}
-		}
-		if(numberOfWorthwhileEnemies >= 2){
-			// Moral Booster is purchased, cooled down, and needed. Trigger it.
-			advLog('Moral Booster is purchased, cooled down, and needed. Trigger it.', 2);
-			triggerAbility(ABILITIES.MORALE_BOOSTER);
+		//Worthwhile enemy is when an enamy has a current hp value of at least 1,000,000
+		if(s().m_rgGameData.lanes[s().m_nExpectedLane].enemies[i].hp > 1000000) {
+			numberOfWorthwhileEnemies++;
 		}
 	}
+	if(numberOfWorthwhileEnemies >= 2){
+		// Moral Booster is purchased, cooled down, and needed. Trigger it.
+		advLog('Moral Booster is purchased, cooled down, and needed. Trigger it.', 2);
+		triggerAbility(ABILITIES.MORALE_BOOSTER);
+	}
 }
+
 function useTacticalNukeIfRelevant() {
 	// Check if Tactical Nuke is purchased
 	if(!canUseAbility(ABILITIES.NUKE))
@@ -982,25 +980,24 @@ function useTacticalNukeIfRelevant() {
 	}
 
 		//Check that the lane has a spawner and record it's health percentage
-		var currentLane = s().m_nExpectedLane;
-		var enemySpawnerExists = false;
-		var enemySpawnerHealthPercent = 0.0;
-		//Count each slot in lane
-		for (var i = 0; i < 4; i++) {
-			var enemy = s().GetEnemy(currentLane, i);
-			if (enemy) {
-				if (enemy.m_data.type === 0) {
-					enemySpawnerExists = true;
-					enemySpawnerHealthPercent = enemy.m_flDisplayedHP / enemy.m_data.max_hp;
-				}
+	var currentLane = s().m_nExpectedLane;
+	var enemySpawnerExists = false;
+	var enemySpawnerHealthPercent = 0.0;
+	//Count each slot in lane
+	for (var i = 0; i < 4; i++) {
+		var enemy = s().GetEnemy(currentLane, i);
+		if (enemy) {
+			if (enemy.m_data.type === 0) {
+				enemySpawnerExists = true;
+				enemySpawnerHealthPercent = enemy.m_flDisplayedHP / enemy.m_data.max_hp;
 			}
 		}
+	}
 
-		// If there is a spawner and it's health is between 60% and 30%, nuke it!
-		if (enemySpawnerExists && enemySpawnerHealthPercent < 0.6 && enemySpawnerHealthPercent > 0.3) {
-			advLog("Tactical Nuke is purchased, cooled down, and needed. Nuke 'em.", 2);
-			triggerAbility(ABILITIES.NUKE);
-		}
+	// If there is a spawner and it's health is between 60% and 30%, nuke it!
+	if (enemySpawnerExists && enemySpawnerHealthPercent < 0.6 && enemySpawnerHealthPercent > 0.3) {
+		advLog("Tactical Nuke is purchased, cooled down, and needed. Nuke 'em.", 2);
+		triggerAbility(ABILITIES.NUKE);
 	}
 }
 
@@ -1062,17 +1059,16 @@ function useMetalDetectorIfRelevant() {
 		return;
 	}
 
-		var enemy = s().GetEnemy(s().m_rgPlayerData.current_lane, s().m_rgPlayerData.target);
-		// check if current target is a boss, otherwise we won't use metal detector
-		if (enemy && enemy.m_data.type == ENEMY_TYPE.BOSS) {
-			var enemyBossHealthPercent = enemy.m_flDisplayedHP / enemy.m_data.max_hp;
+	var enemy = s().GetEnemy(s().m_rgPlayerData.current_lane, s().m_rgPlayerData.target);
+	// check if current target is a boss, otherwise we won't use metal detector
+	if (enemy && enemy.m_data.type == ENEMY_TYPE.BOSS) {
+		var enemyBossHealthPercent = enemy.m_flDisplayedHP / enemy.m_data.max_hp;
 
-			// we want to use metal detector at 25% hp, or even less
-			if (enemyBossHealthPercent <= 0.25) { // We want sufficient time for the metal detector to be applicable
-				// Metal Detector is purchased, cooled down, and needed. Trigger it.
-				advLog('Metal Detector is purchased and cooled down, Triggering it on boss', 2);
-				triggerAbility(ABILITIES.METAL_DETECTOR);
-			}
+		// we want to use metal detector at 25% hp, or even less
+		if (enemyBossHealthPercent <= 0.25) { // We want sufficient time for the metal detector to be applicable
+			// Metal Detector is purchased, cooled down, and needed. Trigger it.
+			advLog('Metal Detector is purchased and cooled down, Triggering it on boss', 2);
+			triggerAbility(ABILITIES.METAL_DETECTOR);
 		}
 	}
 }
