@@ -254,6 +254,7 @@ function MainLoop() {
 		useGoldRainIfRelevant();
 		useMetalDetectorIfRelevant();
 		useCrippleMonsterIfRelevant();
+		useReviveIfRelevant();
 
 		disableCooldownIfRelevant();
 
@@ -1090,6 +1091,15 @@ function useMetalDetectorIfRelevant() {
 	}
 }
 
+function useReviveIfRelevant() {
+	var level = getGameLevel();
+	
+	if(level % 10 !== 9) {
+		return;
+	}
+	tryUsingAbility(ABILITIES.REVIVE);
+}
+
 function attemptRespawn() {
 	if ((s().m_bIsDead) && ((s().m_rgPlayerData.time_died) + 5) < (s().m_nTime)) {
 		w.RespawnPlayer();
@@ -1112,6 +1122,18 @@ function hasItem(itemId) {
 
 function isAbilityCoolingDown(abilityId) {
 	return s().GetCooldownForAbility(abilityId) > 0;
+}
+
+
+function tryUsingAbility(abilityId) {
+	if(isAbilityCoolingDown(abilityId)) {
+		return 0;
+	}
+	if(isAbilityEnabled(abilityId)) {
+		return 0;
+	}
+	triggerAbility(abilityId);
+	return 1;
 }
 
 function hasPurchasedAbility(abilityId) {
