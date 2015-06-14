@@ -1126,7 +1126,7 @@ function canUseAbility(abilityId)
 }
 
 function tryUsingAbility(abilityId) {
-	if(!canUseAbility(abilityid))
+	if(!canUseAbility(abilityId))
 	{
 		return false;
 	}
