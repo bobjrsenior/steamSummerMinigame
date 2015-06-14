@@ -1097,6 +1097,11 @@ function useReviveIfRelevant() {
 	if(level % 10 !== 9) {
 		return;
 	}
+
+	if(getActiveAbilityNum(ABILITIES.REVIVE) > 0) {
+		return;
+	}
+	
 	tryUsingAbility(ABILITIES.REVIVE);
 }
 
