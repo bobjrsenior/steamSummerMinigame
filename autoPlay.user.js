@@ -870,11 +870,8 @@ function useMedicsIfRelevant() {
 	}
 
 	// check if Medics is purchased and cooled down
-	if (hasPurchasedAbility(ABILITIES.MEDIC) && !isAbilityCoolingDown(ABILITIES.MEDIC)) {
-
-		// Medics is purchased, cooled down, and needed. Trigger it.
+	if (tryUsingAbility(ABILITIES.MEDIC)) {
 		advLog('Medics is purchased, cooled down, and needed. Trigger it.', 2);
-		triggerAbility(ABILITIES.MEDIC);
 	}
 
 	// check if God Mode is purchased and cooled down
@@ -896,27 +893,17 @@ function useGoodLuckCharmIfRelevant() {
 	}
 
 	// check if Good Luck Charms is purchased and cooled down
-	if (hasPurchasedAbility(ABILITIES.GOOD_LUCK)) {
-		if (isAbilityCoolingDown(ABILITIES.GOOD_LUCK)) {
-			return;
-		}
-
-		if (! isAbilityEnabled(ABILITIES.GOOD_LUCK)) {
-			return;
-		}
-
-		// Good Luck Charms is purchased, cooled down, and needed. Trigger it.
+	if (tryUsingAbility(ABILITIES.GOOD_LUCK)) {
 		advLog('Good Luck Charms is purchased, cooled down, and needed. Trigger it.', 2);
-		triggerAbility(ABILITIES.GOOD_LUCK);
 	}
 }
 
 function useClusterBombIfRelevant() {
 	//Check if Cluster Bomb is purchased and cooled down
-	if (hasPurchasedAbility(ABILITIES.CLUSTER_BOMB)) {
-		if (isAbilityCoolingDown(ABILITIES.CLUSTER_BOMB)) {
-			return;
-		}
+	if (!canUseAbility(ABILITIES.CLUSTER_BOMB))
+	{
+		return;
+	}
 
 		//Check lane has monsters to explode
 		var currentLane = s().m_nExpectedLane;
@@ -941,10 +928,10 @@ function useClusterBombIfRelevant() {
 
 function useNapalmIfRelevant() {
 	//Check if Napalm is purchased and cooled down
-	if (hasPurchasedAbility(ABILITIES.NAPALM)) {
-		if (isAbilityCoolingDown(ABILITIES.NAPALM)) {
-			return;
-		}
+	if (!canUseAbility(ABILITIES.NAPALM))
+	{
+		return;
+	}
 
 		//Check lane has monsters to burn
 		var currentLane = s().m_nExpectedLane;
@@ -970,12 +957,11 @@ function useNapalmIfRelevant() {
 // Use Moral Booster if doable
 function useMoraleBoosterIfRelevant() {
 	// check if Good Luck Charms is purchased and cooled down
-	if (hasPurchasedAbility(ABILITIES.MORALE_BOOSTER)) {
-		if (isAbilityCoolingDown(ABILITIES.MORALE_BOOSTER)) {
-			return;
-		}
-		var numberOfWorthwhileEnemies = 0;
-		for(var i = 0; i < s().m_rgGameData.lanes[s().m_nExpectedLane].enemies.length; i++){
+	if (!canUseAbility(ABILITIES.MORALE_BOOSTER)) {
+		return;
+	}
+	var numberOfWorthwhileEnemies = 0;
+	for(var i = 0; i < s().m_rgGameData.lanes[s().m_nExpectedLane].enemies.length; i++){
 			//Worthwhile enemy is when an enamy has a current hp value of at least 1,000,000
 			if(s().m_rgGameData.lanes[s().m_nExpectedLane].enemies[i].hp > 1000000) {
 				numberOfWorthwhileEnemies++;
@@ -990,10 +976,10 @@ function useMoraleBoosterIfRelevant() {
 }
 function useTacticalNukeIfRelevant() {
 	// Check if Tactical Nuke is purchased
-	if(hasPurchasedAbility(ABILITIES.NUKE)) {
-		if (isAbilityCoolingDown(ABILITIES.NUKE)) {
-			return;
-		}
+	if(!canUseAbility(ABILITIES.NUKE))
+	{
+		return;
+	}
 
 		//Check that the lane has a spawner and record it's health percentage
 		var currentLane = s().m_nExpectedLane;
@@ -1071,10 +1057,10 @@ function useGoldRainIfRelevant() {
 
 function useMetalDetectorIfRelevant() {
 	// Check if metal detector is purchased
-	if (hasPurchasedAbility(ABILITIES.METAL_DETECTOR)) {
-		if (isAbilityCoolingDown(ABILITIES.METAL_DETECTOR) || isAbilityActive(ABILITIES.METAL_DETECTOR)) {
-			return;
-		}
+	if(!canUseAbility(ABILITIES.METAL_DETECTOR))
+	{
+		return;
+	}
 
 		var enemy = s().GetEnemy(s().m_rgPlayerData.current_lane, s().m_rgPlayerData.target);
 		// check if current target is a boss, otherwise we won't use metal detector
@@ -1101,7 +1087,7 @@ function useReviveIfRelevant() {
 	if(getActiveAbilityNum(ABILITIES.REVIVE) > 0) {
 		return;
 	}
-	
+
 	tryUsingAbility(ABILITIES.REVIVE);
 }
 
@@ -1129,16 +1115,28 @@ function isAbilityCoolingDown(abilityId) {
 	return s().GetCooldownForAbility(abilityId) > 0;
 }
 
-
-function tryUsingAbility(abilityId) {
+function canUseAbility(abilityId)
+{
+	if(!hasPurchasedAbility(abilityId)){
+		return false;
+	}
 	if(isAbilityCoolingDown(abilityId)) {
-		return 0;
+		return false;
 	}
 	if(isAbilityEnabled(abilityId)) {
-		return 0;
+		return false;
 	}
+	return true;
+}
+
+function tryUsingAbility(abilityId) {
+	if(!canUseAbility(abilityid))
+	{
+		return false;
+	}
+
 	triggerAbility(abilityId);
-	return 1;
+	return true;
 }
 
 function hasPurchasedAbility(abilityId) {
